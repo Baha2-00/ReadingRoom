@@ -12,5 +12,7 @@
         public string Specialization { get; set; }
         public string Gender { get; set; }
         public string personType { get; set; }
+        public string EnglishName { get; set; }
+        public string ArabicName { get; set; }
     }
 }
