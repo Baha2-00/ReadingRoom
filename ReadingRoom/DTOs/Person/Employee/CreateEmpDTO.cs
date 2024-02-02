@@ -2,9 +2,7 @@
 {
     public class CreateEmpDTO
     {
-        public int PersonId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string FullName { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
         public string Password { get; set; }
@@ -12,7 +10,5 @@
         public string Specialization { get; set; }
         public string Gender { get; set; }
         public string personType { get; set; }
-        public string EnglishName { get; set; }
-        public string ArabicName { get; set; }
     }
 }

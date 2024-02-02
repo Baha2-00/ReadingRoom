@@ -28,7 +28,7 @@ namespace ReadingRoom.Controllers
 
         [HttpGet]
         [Route("[action]")]
-        public Task<IActionResult> GetAllSubsAction()
+        public async Task<IActionResult> GetAllSubsAction()
         {
             throw new NotImplementedException();
             try
@@ -167,17 +167,28 @@ namespace ReadingRoom.Controllers
             {
                 throw new Exception("Invalid PersonType value Make sure it's one of the listed in the Enum\"");
             }
-            user.Department = await
-           _ReadingRoomDBContext.Departments.FirstOrDefaultAsync(x => x.DepartmentId==dto.id);
+
             await _ReadingRoomDBContext.AddAsync(user);
             await _ReadingRoomDBContext.SaveChangesAsync();
         }
 
 
         [NonAction]
-        public Task<List<GetSubDTO>> GetAllSubs()
+        public  Task<List<GetSubDTO>> GetAllSubs()
         {
             throw new NotImplementedException();
+            //var query = await(from e in _ReadingRoomDBContext.Subscriptions
+
+            //                  select new GetSubDTO
+            //                  {
+            //                     subscriptionId=e.subscriptionId,
+            //                      Name=e.Name.ToString(),
+            //                      Description=e.Description,
+            //                      Price=e.Price,
+            //                      durationInDays=e.durationInDays,
+            //                      DownloadedBookAmount =e.DownloadedBookAmount,
+            //                  }).SingleAsync();
+            //
         }
 
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ReadingRoom.Context;
 using ReadingRoom.DTOs.Content;
 using ReadingRoom.DTOs.Department;
@@ -7,6 +8,9 @@ using ReadingRoom.DTOs.Person.Admin;
 using ReadingRoom.DTOs.Person.Employee;
 using ReadingRoom.DTOs.Subscription;
 using ReadingRoom.Interfaces;
+using ReadingRoom.Models.Entity;
+using System.Reflection;
+using static ReadingRoom.Helper.Enum.Enums;
 
 namespace ReadingRoom.Controllers
 {
@@ -24,72 +28,72 @@ namespace ReadingRoom.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public Task<IActionResult> AddAdminAction(AddAdmin dto)
+        public async Task<IActionResult> AddAdminAction(AddAdmin dto)
         {
-            throw new NotImplementedException();
             try
             {
-
+                await AddAdmin(dto);
+                return new ObjectResult(null) { StatusCode = 201, Value = "Create Success" };
             }
             catch (Exception ex)
             {
-
+                return new ObjectResult(null) { StatusCode = 500, Value = $"Create Failed {ex.Message}" };
             }
         }
         [HttpPost]
         [Route("[action]")]
-        public Task<IActionResult> AddDepartmentAction(AddDepartmentDTOcs dto)
+        public async Task<IActionResult> AddDepartmentAction(AddDepartmentDTOcs dto)
         {
-            throw new NotImplementedException();
             try
             {
-
+                await AddDepartment(dto);
+                return new ObjectResult(null) { StatusCode = 201, Value = "Create Department Success" };
             }
             catch (Exception ex)
             {
-
+                return new ObjectResult(null) { StatusCode = 500, Value = $"Create Failed {ex.Message}" };
             }
         }
         [HttpPost]
         [Route("[action]")]
-        public Task<IActionResult> CreateEmployeeAction(CreateEmpDTO dto)
+        public async Task<IActionResult> CreateEmployeeAction(CreateEmpDTO dto)
         {
-            throw new NotImplementedException();
             try
             {
-
+                await CreateEmployee(dto);
+                return new ObjectResult(null) { StatusCode = 201, Value = "Create Employee Success" };
             }
             catch (Exception ex)
             {
-
+                return new ObjectResult(null) { StatusCode = 500, Value = $"Create Failed {ex.Message}" };
             }
         }
         [HttpPost]
         [Route("[action]")]
-        public Task<IActionResult> CreateContextAction(CreateContentDTO dto)
+        public async Task<IActionResult> CreateContextAction(CreateContentDTO dto)
         {
-            throw new NotImplementedException();
             try
             {
-
+                await CreateContext(dto);
+                return new ObjectResult(null) { StatusCode = 201, Value = "New Content Has Been created" };
             }
             catch (Exception ex)
             {
-
+                return new ObjectResult(null) { StatusCode = 500, Value = $"Failed Creating content  {ex.Message}" };
             }
         }
         [HttpPost]
         [Route("[action]")]
-        public Task<IActionResult> CreateSubsAction(CreateSubDTO dto)
+        public async Task<IActionResult> CreateSubsAction(CreateSubDTO dto)
         {
-            throw new NotImplementedException();
             try
             {
-
+                await CreateSubs(dto);
+                return new ObjectResult(null) { StatusCode = 201, Value = "New Subscription Has Been created" };
             }
             catch (Exception ex)
             {
-
+                return new ObjectResult(null) { StatusCode = 500, Value = $"Failed Creating Sub  {ex.Message}" };
             }
         }
 
@@ -156,30 +160,142 @@ namespace ReadingRoom.Controllers
 
         #region Implementation
         [NonAction]
-        public Task AddAdmin(AddAdmin dto)
+        public async Task AddAdmin(AddAdmin dto)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(dto.Email))
+                throw new Exception("Email Is Required");
+            if (string.IsNullOrEmpty(dto.Phone))
+                throw new Exception("Phone Is Required");
+            if (string.IsNullOrEmpty(dto.Password))
+                throw new Exception("Password Is Required");
+            if (string.IsNullOrEmpty(dto.fullName))
+                throw new Exception("FullName Is Required");
+            Person user = new Person();
+            user.fullName = dto.fullName;
+            user.Email= dto.Email;
+            user.Phone= dto.Phone;
+            user.Password= dto.Password;
+            if (Enum.TryParse(dto.personType, out PersonType type))
+            {
+                user.PersonType = type;
+            }
+            else
+            {
+                throw new Exception("Invalid Gender value Make sure it's either Male or Female");
+            }
+            _ReadingRoomDBContext.AddAsync(user);
+            _ReadingRoomDBContext.SaveChangesAsync();
         }
         [NonAction]
-        public Task AddDepartment(AddDepartmentDTOcs dto)
+        public async Task AddDepartment(AddDepartmentDTOcs dto)
         {
-            throw new NotImplementedException();
+           
+            Department dep = new Department();
+            
+            if (Enum.TryParse(dto.ArabicName, out DepartmentNameAR Arname))
+            {
+                dep.ArabicName = Arname;
+            }
+            else
+            {
+                throw new Exception("Invalid Gender value Make sure it's either Male or Female");
+            }
+            if (Enum.TryParse(dto.EnglishName, out DepartmentNameEN enName))
+            {
+                dep.EnglishName = enName;
+            }
+            else
+            {
+                throw new Exception("Invalid Gender value Make sure it's either Male or Female");
+            }
+            dep.Description = dto.Description;
+            dep.ContactEmail = dto.ContactEmail;
+            dep.PhoneNumber = dto.PhoneNumber;
+            dep.IsActive = true;
+
+            _ReadingRoomDBContext.AddAsync(dep);
+            _ReadingRoomDBContext.SaveChangesAsync();
+
+        }
+
+
+        [NonAction]
+        public async Task CreateContext(CreateContentDTO dto)
+        {
+            Content content = new Content();
+            content.Name = dto.Name;
+            content.Description = dto.Description;
+            content.Author = dto.Author;
+            content.Price = dto.Price;
+            content.DatePublished = dto.DatePublished;
+            content.IsActive = true;
+            if (Enum.TryParse(dto.ContentType, out ContentType cont))
+            {
+                content.ContentType = cont;
+            }
+            else
+            {
+                throw new Exception("Invalid ContentType value Make sure it's one of the listed in the Enum\"");
+            }
+            
+            await _ReadingRoomDBContext.AddAsync(content);
+            await _ReadingRoomDBContext.SaveChangesAsync();
         }
         [NonAction]
-        public Task CreateContext(CreateContentDTO dto)
+        public async Task CreateEmployee(CreateEmpDTO dto)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(dto.Email))
+                throw new Exception("Email Is Required");
+            if (string.IsNullOrEmpty(dto.Phone))
+                throw new Exception("Phone Is Required");
+            if (string.IsNullOrEmpty(dto.Password))
+                throw new Exception("Password Is Required");
+
+            Person user = new Person();
+            user.fullName = dto.FullName;
+            user.Email = dto.Email;
+            user.Phone = dto.Phone;
+            user.Password = dto.Password;
+            if (Enum.TryParse(dto.personType, out PersonType type))
+            {
+                user.PersonType = type;
+            }
+            else
+            {
+                throw new Exception("Invalid Gender value Make sure it's either Male or Female");
+            }
+
+            _ReadingRoomDBContext.AddAsync(user);
+            _ReadingRoomDBContext.SaveChangesAsync();
+     
         }
+
+
         [NonAction]
-        public Task CreateEmployee(CreateEmpDTO dto)
+        public async Task CreateSubs(CreateSubDTO dto)
         {
-            throw new NotImplementedException();
+            Subscription sub = new Subscription();
+            if (Enum.TryParse(dto.Name, out SubscriptionType subs))
+            {
+                sub.Name = subs;
+            }
+            else
+            {
+                throw new Exception("Invalid ContentType value Make sure it's one of the listed in the Enum\"");
+            }
+            sub.Price = dto.Price;
+            sub.Description = dto.Description;
+            sub.DownloadedBookAmount = dto.DownloadedBookAmount;
+            sub.durationInDays = dto.durationInDays;
+            sub.IsActive = true;
+            
+
+            await _ReadingRoomDBContext.AddAsync(sub);
+            await _ReadingRoomDBContext.SaveChangesAsync();
         }
-        [NonAction]
-        public Task CreateSubs(CreateSubDTO dto)
-        {
-            throw new NotImplementedException();
-        }
+
+
+
         [NonAction]
         public Task DisOrReActive(UpdateSubs dto)
         {

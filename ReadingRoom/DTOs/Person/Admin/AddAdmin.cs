@@ -2,7 +2,6 @@
 {
     public class AddAdmin
     {
-        public int PersonId { get; set; }
         public string fullName { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
