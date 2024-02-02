@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ReadingRoom.Migrations
 {
     /// <inheritdoc />
-    public partial class mig2 : Migration
+    public partial class mig1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -45,7 +45,6 @@ namespace ReadingRoom.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Subscription", x => x.subscriptionId);
-                    table.CheckConstraint("CH_Subscription_Description", "Description>= 8");
                     table.CheckConstraint("CH_Subscription_DownloadedBookAmount", "DownloadedBookAmount>=4");
                     table.CheckConstraint("CH_Subscription_durationInDays", "durationInDays >=15");
                     table.CheckConstraint("CH_Subscription_Price", "Price>=10");
@@ -69,8 +68,6 @@ namespace ReadingRoom.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Content", x => x.ContentId);
-                    table.CheckConstraint("CH_Content_Author", "Author>=5");
-                    table.CheckConstraint("CH_Content_Description", "Description>=10");
                     table.CheckConstraint("CH_Content_Price", "Price>=4");
                     table.ForeignKey(
                         name: "FK_Content_Subscription_subscriptionId",
@@ -86,17 +83,15 @@ namespace ReadingRoom.Migrations
                 {
                     PersonId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     fullName = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Age = table.Column<int>(type: "int", nullable: false),
+                    PersonType = table.Column<int>(type: "int", nullable: false),
                     Specialization = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     birthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    personType = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
                     DepartmentId = table.Column<int>(type: "int", nullable: false),
                     ContentId = table.Column<int>(type: "int", nullable: false),
@@ -106,8 +101,7 @@ namespace ReadingRoom.Migrations
                 {
                     table.PrimaryKey("PK_Person", x => x.PersonId);
                     table.CheckConstraint("CH_Person_Age", "Age>= 16");
-                    table.CheckConstraint("CH_Person_Email", "EMAIL LIKE '%@______%.COM'");
-                    table.CheckConstraint("CH_Person_FullName", "FullName>=3");
+                    table.CheckConstraint("CH_Person_Email", "EMAIL LIKE '%@____%.COM'");
                     table.CheckConstraint("CH_Person_Phone", "Phone LIKE '07________'");
                     table.ForeignKey(
                         name: "FK_Person_Content_ContentId",

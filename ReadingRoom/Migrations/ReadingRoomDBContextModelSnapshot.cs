@@ -66,10 +66,6 @@ namespace ReadingRoom.Migrations
 
                     b.ToTable("Content", null, t =>
                         {
-                            t.HasCheckConstraint("CH_Content_Author", "Author>=5");
-
-                            t.HasCheckConstraint("CH_Content_Description", "Description>=10");
-
                             t.HasCheckConstraint("CH_Content_Price", "Price>=4");
                         });
                 });
@@ -138,10 +134,6 @@ namespace ReadingRoom.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Gender")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -151,13 +143,12 @@ namespace ReadingRoom.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PersonType")
+                        .HasColumnType("int");
 
                     b.Property<string>("Phone")
                         .IsRequired()
@@ -174,9 +165,6 @@ namespace ReadingRoom.Migrations
                         .IsRequired()
                         .HasMaxLength(120)
                         .HasColumnType("nvarchar(120)");
-
-                    b.Property<int>("personType")
-                        .HasColumnType("int");
 
                     b.Property<int>("subscriptionId")
                         .HasColumnType("int");
@@ -199,9 +187,7 @@ namespace ReadingRoom.Migrations
                         {
                             t.HasCheckConstraint("CH_Person_Age", "Age>= 16");
 
-                            t.HasCheckConstraint("CH_Person_Email", "EMAIL LIKE '%@______%.COM'");
-
-                            t.HasCheckConstraint("CH_Person_FullName", "FullName>=3");
+                            t.HasCheckConstraint("CH_Person_Email", "EMAIL LIKE '%@____%.COM'");
 
                             t.HasCheckConstraint("CH_Person_Phone", "Phone LIKE '07________'");
                         });
@@ -241,8 +227,6 @@ namespace ReadingRoom.Migrations
 
                     b.ToTable("Subscription", null, t =>
                         {
-                            t.HasCheckConstraint("CH_Subscription_Description", "Description>= 8");
-
                             t.HasCheckConstraint("CH_Subscription_DownloadedBookAmount", "DownloadedBookAmount>=4");
 
                             t.HasCheckConstraint("CH_Subscription_Price", "Price>=10");

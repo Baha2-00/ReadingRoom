@@ -8,7 +8,7 @@ namespace ReadingRoom.Interfaces
 {
     public interface IAdmin
     {
-        Task CrateEmployee(CreateEmpDTO dto);
+        Task CreateEmployee(CreateEmpDTO dto);
         Task UpdateEmployee(UpdateEmpDTO dto);
         //CreateDepartment
         Task AddDepartment(AddDepartmentDTOcs dto);

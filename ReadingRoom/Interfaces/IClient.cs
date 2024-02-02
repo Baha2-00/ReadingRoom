@@ -6,6 +6,6 @@ namespace ReadingRoom.Interfaces
     public interface IClient
     {
         Task RegisterInSub(BuySubscriptionDTO dto);
-        //Task DownloadBookSub(BuySubscriptionDTO dto);
+        Task DownloadBookSub(BuySubscriptionDTO dto);
     }
 }

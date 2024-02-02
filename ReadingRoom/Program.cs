@@ -1,5 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using ReadingRoom.Context;
+using Serilog;
+using System.Reflection;
+using System.Text.Json.Serialization;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,12 +18,19 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ReadingRoomDBContext>(cnn => cnn.UseSqlServer(builder.Configuration.GetConnectionString("sqlconnect")));
 
 //builder.Services.AddDbContext<BookStoreDBContext>(cnn => cnn.UseMySQL(builder.Configuration.GetConnectionString("mysqlconnect")));
+var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+string loggerPath = configuration.GetSection("LoggerPath").Value;
+
+Serilog.Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(configuration).
+                WriteTo.File(loggerPath, rollingInterval: RollingInterval.Day).
+               CreateLogger();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    Log.Information("Application Started");
     app.UseSwagger();
     app.UseSwaggerUI();
 }
