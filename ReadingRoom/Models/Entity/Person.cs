@@ -16,8 +16,9 @@ namespace ReadingRoom.Models.Entity
         public DateTime birthDate { get; set; }
         public bool IsActive { get; set; }
         //Relations
-        public virtual Department Department { get; set; }
-        public virtual Content Content { get; set; }
-        public virtual Subscription Subscrip { get; set; }
+        public virtual Department? Department { get; set; } = null;
+        //public virtual Content Content { get; set; }
+        public virtual Subscription? Subscrip { get; set; }
+        public virtual List<UserContentcs> UserContentcs { get; set; }
     }
 }

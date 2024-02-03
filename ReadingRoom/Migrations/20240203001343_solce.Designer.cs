@@ -12,8 +12,8 @@ using ReadingRoom.Context;
 namespace ReadingRoom.Migrations
 {
     [DbContext(typeof(ReadingRoomDBContext))]
-    [Migration("20240202211914_mig1")]
-    partial class mig1
+    [Migration("20240203001343_solce")]
+    partial class solce
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,12 +60,7 @@ namespace ReadingRoom.Migrations
                     b.Property<float>("Price")
                         .HasColumnType("real");
 
-                    b.Property<int>("subscriptionId")
-                        .HasColumnType("int");
-
                     b.HasKey("ContentId");
-
-                    b.HasIndex("subscriptionId");
 
                     b.ToTable("Content", null, t =>
                         {
@@ -127,10 +122,7 @@ namespace ReadingRoom.Migrations
                     b.Property<int>("Age")
                         .HasColumnType("int");
 
-                    b.Property<int>("ContentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DepartmentId")
+                    b.Property<int?>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -169,12 +161,10 @@ namespace ReadingRoom.Migrations
                         .HasMaxLength(120)
                         .HasColumnType("nvarchar(120)");
 
-                    b.Property<int>("subscriptionId")
+                    b.Property<int?>("subscriptionId")
                         .HasColumnType("int");
 
                     b.HasKey("PersonId");
-
-                    b.HasIndex("ContentId");
 
                     b.HasIndex("DepartmentId");
 
@@ -238,47 +228,66 @@ namespace ReadingRoom.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ReadingRoom.Models.Entity.Content", b =>
+            modelBuilder.Entity("ReadingRoom.Models.Entity.UserContentcs", b =>
                 {
-                    b.HasOne("ReadingRoom.Models.Entity.Subscription", "Subscription")
-                        .WithMany("Contents")
-                        .HasForeignKey("subscriptionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Navigation("Subscription");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ContentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContentId");
+
+                    b.HasIndex("PersonId");
+
+                    b.ToTable("UserContentcs");
                 });
 
             modelBuilder.Entity("ReadingRoom.Models.Entity.Person", b =>
                 {
-                    b.HasOne("ReadingRoom.Models.Entity.Content", "Content")
-                        .WithMany("Client")
-                        .HasForeignKey("ContentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("ReadingRoom.Models.Entity.Department", "Department")
                         .WithMany("Employees")
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DepartmentId");
 
                     b.HasOne("ReadingRoom.Models.Entity.Subscription", "Subscrip")
                         .WithMany("Client")
-                        .HasForeignKey("subscriptionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Content");
+                        .HasForeignKey("subscriptionId");
 
                     b.Navigation("Department");
 
                     b.Navigation("Subscrip");
                 });
 
+            modelBuilder.Entity("ReadingRoom.Models.Entity.UserContentcs", b =>
+                {
+                    b.HasOne("ReadingRoom.Models.Entity.Content", "Content")
+                        .WithMany("UserContentcs")
+                        .HasForeignKey("ContentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ReadingRoom.Models.Entity.Person", "Person")
+                        .WithMany("UserContentcs")
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Content");
+
+                    b.Navigation("Person");
+                });
+
             modelBuilder.Entity("ReadingRoom.Models.Entity.Content", b =>
                 {
-                    b.Navigation("Client");
+                    b.Navigation("UserContentcs");
                 });
 
             modelBuilder.Entity("ReadingRoom.Models.Entity.Department", b =>
@@ -286,11 +295,14 @@ namespace ReadingRoom.Migrations
                     b.Navigation("Employees");
                 });
 
+            modelBuilder.Entity("ReadingRoom.Models.Entity.Person", b =>
+                {
+                    b.Navigation("UserContentcs");
+                });
+
             modelBuilder.Entity("ReadingRoom.Models.Entity.Subscription", b =>
                 {
                     b.Navigation("Client");
-
-                    b.Navigation("Contents");
                 });
 #pragma warning restore 612, 618
         }

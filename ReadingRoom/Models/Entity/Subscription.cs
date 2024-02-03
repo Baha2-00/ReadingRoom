@@ -12,6 +12,5 @@ namespace ReadingRoom.Models.Entity
         public int DownloadedBookAmount { get; set; }
         public bool IsActive { get; set; }
         public virtual List<Person> Client { get; set; }
-        public virtual List<Content> Contents { get; set; }
     }
 }

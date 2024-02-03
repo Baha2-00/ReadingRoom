@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReadingRoom.Context;
 
@@ -11,9 +12,11 @@ using ReadingRoom.Context;
 namespace ReadingRoom.Migrations
 {
     [DbContext(typeof(ReadingRoomDBContext))]
-    partial class ReadingRoomDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240203000529_initalnewversion")]
+    partial class initalnewversion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -119,7 +122,7 @@ namespace ReadingRoom.Migrations
                     b.Property<int>("Age")
                         .HasColumnType("int");
 
-                    b.Property<int?>("DepartmentId")
+                    b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -158,7 +161,7 @@ namespace ReadingRoom.Migrations
                         .HasMaxLength(120)
                         .HasColumnType("nvarchar(120)");
 
-                    b.Property<int?>("subscriptionId")
+                    b.Property<int>("subscriptionId")
                         .HasColumnType("int");
 
                     b.HasKey("PersonId");
@@ -252,11 +255,15 @@ namespace ReadingRoom.Migrations
                 {
                     b.HasOne("ReadingRoom.Models.Entity.Department", "Department")
                         .WithMany("Employees")
-                        .HasForeignKey("DepartmentId");
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ReadingRoom.Models.Entity.Subscription", "Subscrip")
                         .WithMany("Client")
-                        .HasForeignKey("subscriptionId");
+                        .HasForeignKey("subscriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Department");
 

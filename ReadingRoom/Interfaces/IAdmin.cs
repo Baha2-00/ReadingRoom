@@ -20,6 +20,6 @@ namespace ReadingRoom.Interfaces
         Task AddAdmin(AddAdmin dto);
         Task UpdateAdmin(UpdateAdmin dto);
         //Context
-        Task CreateContext(CreateContentDTO dto);
+        Task CreateContent(CreateContentDTO dto);
     }
 }

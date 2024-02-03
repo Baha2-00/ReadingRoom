@@ -12,7 +12,7 @@ namespace ReadingRoom.Models.Entity
         public DateTime DatePublished { get; set; }
         public ContentType ContentType { get; set; }
         public bool IsActive { get; set; }
-        public virtual List<Person> Client { get; set; }
-        public virtual Subscription Subscription { get; set; }
+        public virtual List<UserContentcs> UserContentcs { get; set; }
+
     }
 }

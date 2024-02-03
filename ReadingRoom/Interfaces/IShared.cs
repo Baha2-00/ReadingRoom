@@ -11,7 +11,7 @@ namespace ReadingRoom.Interfaces
         //Filltering 
         Task<List<GetSubDTO>> GetAllSubs();
         Task<List<GetSubDTO>> GetSubsFilter(float Price, float durationInDays, int Name);
-        Task<List<GetContentDTO>> GetBooks(int ContentType);
+        Task<List<GetContentDetailsDTO>> GetAllContent();
         Task<List<GetContentDetailsDTO>> GetContentDetails(float Price, int ContentType, string Name);
         //Regist
         Task CreateNewAccount(CreatClientDTO dto);

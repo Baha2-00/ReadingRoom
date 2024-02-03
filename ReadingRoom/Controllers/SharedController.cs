@@ -9,6 +9,7 @@ using ReadingRoom.DTOs.Subscription;
 using ReadingRoom.Interfaces;
 using ReadingRoom.Models.Entity;
 using System.Reflection;
+using static Azure.Core.HttpHeader;
 using static ReadingRoom.Helper.Enum.Enums;
 
 namespace ReadingRoom.Controllers
@@ -26,60 +27,80 @@ namespace ReadingRoom.Controllers
 
         #region Get
 
+        /// <summary>
+        /// an action to Get All Subscriptions
+        /// </summary>
+        /// <response code="200">Returns success  </response>
+        /// <response code="400">Something Went Wrong</response>    
+        /// <response code="500">Server is UnAvailable</response> 
         [HttpGet]
         [Route("[action]")]
         public async Task<IActionResult> GetAllSubsAction()
         {
-            throw new NotImplementedException();
             try
             {
-
+                return Ok(await GetAllSubs());
             }
             catch (Exception ex)
             {
-
+                return new ObjectResult(null) { StatusCode = 500, Value = "Something Went Wrong" };
             }
         }
+        /// <summary>
+        /// an action to Get All Content
+        /// </summary>
+        /// <response code="200">Returns success  </response>
+        /// <response code="400">Something Went Wrong</response>    
+        /// <response code="500">Server is UnAvailable</response> 
         [HttpGet]
         [Route("[action]")]
-        public Task<IActionResult> GetBooksAction(int ContentType)
+        public async Task<IActionResult> GetAllContentAction()
         {
-            throw new NotImplementedException();
             try
             {
-
+                return Ok(await GetAllContent());
             }
             catch (Exception ex)
             {
-
+                return new ObjectResult(null) { StatusCode = 500, Value = "Something Went Wrong" };
             }
         }
+        /// <summary>
+        /// an action to Get Specific Content
+        /// </summary>
+        /// <response code="200">Returns Login success  </response>
+        /// <response code="400">Something Went Wrong</response>    
+        /// <response code="500">Server is UnAvailable</response> 
         [HttpGet]
         [Route("[action]")]
-        public Task<IActionResult> GetContentDetailsAction(float Price, int ContentType, string Name)
+        public async Task<IActionResult> GetContentDetailsAction(float Price, int ContentType, string Name)
         {
-            throw new NotImplementedException();
             try
             {
-
+                return Ok(await GetContentDetails(Price,ContentType,Name));
             }
             catch (Exception ex)
             {
-
+                return new ObjectResult(null) { StatusCode = 500, Value = "Something Went Wrong" };
             }
         }
+        /// <summary>
+        /// an action to Get Specific subscription
+        /// </summary>
+        /// <response code="200">Returns Login success  </response>
+        /// <response code="400">Something Went Wrong</response>    
+        /// <response code="500">Server is UnAvailable</response> 
         [HttpGet]
         [Route("[action]")]
-        public Task<IActionResult> GetSubsFilterAction(float Price, float durationInDays, int Name)
+        public async Task<IActionResult> GetSubsFilterAction(float Price, float durationInDays, int Name)
         {
-            throw new NotImplementedException();
             try
             {
-
+                return Ok(await GetSubsFilter(Price, durationInDays, Name));
             }
             catch (Exception ex)
             {
-
+                return new ObjectResult(null) { StatusCode = 500, Value = "Something Went Wrong" };
             }
         }
 
@@ -87,6 +108,12 @@ namespace ReadingRoom.Controllers
 
         #region Post
 
+        /// <summary>
+        /// an action to Create New Account
+        /// </summary>
+        /// <response code="200">Returns success  </response>
+        /// <response code="400">Something Went Wrong</response>    
+        /// <response code="500">Server is UnAvailable</response>  
         [HttpPost]
         [Route("[action]")]
         public async Task<IActionResult> CreateNewAccountAction(CreatClientDTO dto)
@@ -105,6 +132,12 @@ namespace ReadingRoom.Controllers
 
         #region Authentication
 
+        /// <summary>
+        /// an action to Login
+        /// </summary>
+        /// <response code="200">Returns Login success  </response>
+        /// <response code="400">Something Went Wrong</response>    
+        /// <response code="500">Server is UnAvailable</response> 
         [HttpPost]
         [Route("[action]")]
         public async Task<IActionResult> LoginAction(Login dto)
@@ -119,6 +152,12 @@ namespace ReadingRoom.Controllers
                 return new ObjectResult(null) { StatusCode = 500, Value = $"Login Failed {ex.Message}" };
             }
         }
+        /// <summary>
+        /// an action to reset Password
+        /// </summary>
+        /// <response code="200">Returns Password reset success  </response>
+        /// <response code="400">Something Went Wrong</response>    
+        /// <response code="500">Server is UnAvailable</response> 
         [HttpPut]
         [Route("[action]")]
         public async Task<IActionResult> ResetPasswordAction(ResetPasswordDTO dto)
@@ -174,28 +213,38 @@ namespace ReadingRoom.Controllers
 
 
         [NonAction]
-        public  Task<List<GetSubDTO>> GetAllSubs()
+        public async Task<List<GetSubDTO>> GetAllSubs()
         {
-            throw new NotImplementedException();
-            //var query = await(from e in _ReadingRoomDBContext.Subscriptions
 
-            //                  select new GetSubDTO
-            //                  {
-            //                     subscriptionId=e.subscriptionId,
-            //                      Name=e.Name.ToString(),
-            //                      Description=e.Description,
-            //                      Price=e.Price,
-            //                      durationInDays=e.durationInDays,
-            //                      DownloadedBookAmount =e.DownloadedBookAmount,
-            //                  }).SingleAsync();
-            //
+            var query = await (from e in _ReadingRoomDBContext.Subscriptions
+                               select new GetSubDTO
+                               {
+                                   subscriptionId = e.subscriptionId,
+                                   Name = e.Name.ToString(),
+                                   Description = e.Description,
+                                   Price = e.Price,
+                                   durationInDays = e.durationInDays,
+                                   DownloadedBookAmount = e.DownloadedBookAmount,
+                               }).ToListAsync();
+            return query;
         }
 
 
         [NonAction]
-        public Task<List<GetContentDTO>> GetBooks(int ContentType)
+        public async Task<List<GetContentDetailsDTO>> GetAllContent()
         {
-            throw new NotImplementedException();
+            var query = await (from e in _ReadingRoomDBContext.Contents
+                               select new GetContentDetailsDTO
+                               {
+                                   ContentId = e.ContentId,
+                                  Name = e.Name,
+                                  Description=e.Description,
+                                  Author=e.Author,
+                                  Price=e.Price,
+                                  DatePublished=e.DatePublished,
+                                  ContentType=e.ContentType.ToString()
+                               }).ToListAsync();
+            return query;
         }
 
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using ReadingRoom.Context;
 using ReadingRoom.DTOs.Content;
 using ReadingRoom.DTOs.Department;
@@ -10,6 +11,7 @@ using ReadingRoom.DTOs.Subscription;
 using ReadingRoom.Interfaces;
 using ReadingRoom.Models.Entity;
 using System.Reflection;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static ReadingRoom.Helper.Enum.Enums;
 
 namespace ReadingRoom.Controllers
@@ -26,6 +28,13 @@ namespace ReadingRoom.Controllers
 
         #region Post
 
+        /// <summary>
+        /// an action to Add Admin  
+        /// </summary>
+        /// <response code="200">Returns Admin Created  </response>
+        /// <response code="400">Something Went Wrong</response>    
+        /// <response code="500">Server is UnAvailable</response>   
+
         [HttpPost]
         [Route("[action]")]
         public async Task<IActionResult> AddAdminAction(AddAdmin dto)
@@ -40,6 +49,12 @@ namespace ReadingRoom.Controllers
                 return new ObjectResult(null) { StatusCode = 500, Value = $"Create Failed {ex.Message}" };
             }
         }
+        /// <summary>
+        /// an action to Add Department  
+        /// </summary>
+        /// <response code="200">Returns Department Created  </response>
+        /// <response code="400">Something Went Wrong</response>    
+        /// <response code="500">Server is UnAvailable</response>   
         [HttpPost]
         [Route("[action]")]
         public async Task<IActionResult> AddDepartmentAction(AddDepartmentDTOcs dto)
@@ -54,6 +69,13 @@ namespace ReadingRoom.Controllers
                 return new ObjectResult(null) { StatusCode = 500, Value = $"Create Failed {ex.Message}" };
             }
         }
+
+        /// <summary>
+        /// an action to Add Employee  
+        /// </summary>
+        /// <response code="200">Returns Employee Created  </response>
+        /// <response code="400">Something Went Wrong</response>    
+        /// <response code="500">Server is UnAvailable</response>  
         [HttpPost]
         [Route("[action]")]
         public async Task<IActionResult> CreateEmployeeAction(CreateEmpDTO dto)
@@ -68,13 +90,19 @@ namespace ReadingRoom.Controllers
                 return new ObjectResult(null) { StatusCode = 500, Value = $"Create Failed {ex.Message}" };
             }
         }
+        /// <summary>
+        /// an action to Add Content  
+        /// </summary>
+        /// <response code="200">Returns Content Created  </response>
+        /// <response code="400">Something Went Wrong</response>    
+        /// <response code="500">Server is UnAvailable</response>  
         [HttpPost]
         [Route("[action]")]
-        public async Task<IActionResult> CreateContextAction(CreateContentDTO dto)
+        public async Task<IActionResult> CreateContentAction(CreateContentDTO dto)
         {
             try
             {
-                await CreateContext(dto);
+                await CreateContent(dto);
                 return new ObjectResult(null) { StatusCode = 201, Value = "New Content Has Been created" };
             }
             catch (Exception ex)
@@ -82,6 +110,13 @@ namespace ReadingRoom.Controllers
                 return new ObjectResult(null) { StatusCode = 500, Value = $"Failed Creating content  {ex.Message}" };
             }
         }
+
+        /// <summary>
+        /// an action to Add Subscription  
+        /// </summary>
+        /// <response code="200">Returns Subscription is Created  </response>
+        /// <response code="400">Something Went Wrong</response>    
+        /// <response code="500">Server is UnAvailable</response>  
         [HttpPost]
         [Route("[action]")]
         public async Task<IActionResult> CreateSubsAction(CreateSubDTO dto)
@@ -100,60 +135,86 @@ namespace ReadingRoom.Controllers
         #endregion
 
         #region Put
+
+        /// <summary>
+        /// an action to Dis Or ReActive Subscription
+        /// </summary>
+        /// <response code="200">Returns Update success  </response>
+        /// <response code="400">Something Went Wrong</response>    
+        /// <response code="500">Server is UnAvailable</response>  
         [HttpPut]
         [Route("[action]")]
-        public Task<IActionResult> DisOrReActiveAction(UpdateSubs dto)
+        public async Task<IActionResult> DisOrReActiveAction(UpdateSubs dto)
         {
-            throw new NotImplementedException();
             try
             {
-
+                await DisOrReActive(dto);
+                return new ObjectResult(null) { StatusCode = 201, Value = "Update Done" };
             }
             catch (Exception ex)
             {
-
+                return new ObjectResult(null) { StatusCode = 500, Value = $"Failed Updating Sub  {ex.Message}" };
             }
         }
+
+        /// <summary>
+        /// an action to Update Admin
+        /// </summary>
+        /// <response code="200">Returns Update success  </response>
+        /// <response code="400">Something Went Wrong</response>    
+        /// <response code="500">Server is UnAvailable</response>  
         [HttpPut]
         [Route("[action]")]
-        public Task<IActionResult> UpdateAdminAction(UpdateAdmin dto)
+        public async Task<IActionResult> UpdateAdminAction(UpdateAdmin dto)
         {
-            throw new NotImplementedException();
             try
             {
-
+                await UpdateAdmin(dto);
+                return new ObjectResult(null) { StatusCode = 201, Value = "Update Done" };
             }
             catch (Exception ex)
             {
-
+                return new ObjectResult(null) { StatusCode = 500, Value = $"Failed Updating Admin  {ex.Message}" };
             }
         }
+        /// <summary>
+        /// an action to Update Employee
+        /// </summary>
+        /// <response code="200">Returns Update success  </response>
+        /// <response code="400">Something Went Wrong</response>    
+        /// <response code="500">Server is UnAvailable</response>  
         [HttpPut]
         [Route("[action]")]
-        public Task<IActionResult> UpdateEmployeeAction(UpdateEmpDTO dto)
+        public async Task<IActionResult> UpdateEmployeeAction(UpdateEmpDTO dto)
         {
-            throw new NotImplementedException();
             try
             {
-
+                await UpdateEmployee(dto);
+                return new ObjectResult(null) { StatusCode = 201, Value = "Update Done" };
             }
             catch (Exception ex)
             {
-
+                return new ObjectResult(null) { StatusCode = 500, Value = $"Failed Updating Employee  {ex.Message}" };
             }
         }
+        /// <summary>
+        /// an action to Update Subscription
+        /// </summary>
+        /// <response code="200">Returns Update success  </response>
+        /// <response code="400">Something Went Wrong</response>    
+        /// <response code="500">Server is UnAvailable</response>  
         [HttpPut]
         [Route("[action]")]
-        public Task<IActionResult> UpdateSubAction(UpdateSubs dto)
+        public async Task<IActionResult> UpdateSubAction(UpdateSubs dto)
         {
-            throw new NotImplementedException();
             try
             {
-
+                await UpdateSub(dto);
+                return new ObjectResult(null) { StatusCode = 201, Value = "Update Done" };
             }
             catch (Exception ex)
             {
-
+                return new ObjectResult(null) { StatusCode = 500, Value = $"Failed Updating Sub  {ex.Message}" };
             }
         }
         #endregion
@@ -168,23 +229,19 @@ namespace ReadingRoom.Controllers
                 throw new Exception("Phone Is Required");
             if (string.IsNullOrEmpty(dto.Password))
                 throw new Exception("Password Is Required");
-            if (string.IsNullOrEmpty(dto.fullName))
+            if (string.IsNullOrEmpty(dto.FullName))
                 throw new Exception("FullName Is Required");
             Person user = new Person();
-            user.fullName = dto.fullName;
+            user.fullName = dto.FullName;
             user.Email= dto.Email;
             user.Phone= dto.Phone;
             user.Password= dto.Password;
-            if (Enum.TryParse(dto.personType, out PersonType type))
-            {
-                user.PersonType = type;
-            }
-            else
-            {
-                throw new Exception("Invalid Gender value Make sure it's either Male or Female");
-            }
-            _ReadingRoomDBContext.AddAsync(user);
-            _ReadingRoomDBContext.SaveChangesAsync();
+            user.Age = dto.Age;
+            user.Gender = dto.Gender;
+            user.Specialization = dto.Specialization;
+            user.PersonType = PersonType.Admin;
+            await _ReadingRoomDBContext.AddAsync(user);
+            await _ReadingRoomDBContext.SaveChangesAsync();
         }
         [NonAction]
         public async Task AddDepartment(AddDepartmentDTOcs dto)
@@ -213,14 +270,14 @@ namespace ReadingRoom.Controllers
             dep.PhoneNumber = dto.PhoneNumber;
             dep.IsActive = true;
 
-            _ReadingRoomDBContext.AddAsync(dep);
-            _ReadingRoomDBContext.SaveChangesAsync();
+            await _ReadingRoomDBContext.AddAsync(dep);
+            await _ReadingRoomDBContext.SaveChangesAsync();
 
         }
 
 
         [NonAction]
-        public async Task CreateContext(CreateContentDTO dto)
+        public async Task CreateContent(CreateContentDTO dto)
         {
             Content content = new Content();
             content.Name = dto.Name;
@@ -256,17 +313,13 @@ namespace ReadingRoom.Controllers
             user.Email = dto.Email;
             user.Phone = dto.Phone;
             user.Password = dto.Password;
-            if (Enum.TryParse(dto.personType, out PersonType type))
-            {
-                user.PersonType = type;
-            }
-            else
-            {
-                throw new Exception("Invalid Gender value Make sure it's either Male or Female");
-            }
+            user.Age = dto.Age;
+            user.Gender = dto.Gender;
+            user.Specialization = dto.Specialization;
+            user.PersonType = PersonType.Employee;
 
-            _ReadingRoomDBContext.AddAsync(user);
-            _ReadingRoomDBContext.SaveChangesAsync();
+            await _ReadingRoomDBContext.AddAsync(user);
+           await _ReadingRoomDBContext.SaveChangesAsync();
      
         }
 
@@ -274,14 +327,16 @@ namespace ReadingRoom.Controllers
         [NonAction]
         public async Task CreateSubs(CreateSubDTO dto)
         {
+
             Subscription sub = new Subscription();
+
             if (Enum.TryParse(dto.Name, out SubscriptionType subs))
             {
                 sub.Name = subs;
             }
             else
             {
-                throw new Exception("Invalid ContentType value Make sure it's one of the listed in the Enum\"");
+                throw new Exception("Invalid Subscription Type Try Again");
             }
             sub.Price = dto.Price;
             sub.Description = dto.Description;
@@ -295,27 +350,117 @@ namespace ReadingRoom.Controllers
         }
 
 
-
         [NonAction]
-        public Task DisOrReActive(UpdateSubs dto)
+        public async Task DisOrReActive(UpdateSubs dto)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(dto.Name) || string.IsNullOrEmpty(dto.Description))
+                throw new Exception("Name and Description are required");
+            var user = await _ReadingRoomDBContext.Subscriptions.Where(x => x.Name.Equals(dto.Name)
+            && x.Description.Equals(dto.Description) && x.Price.Equals(dto.Price)
+            && x.durationInDays.Equals(dto.durationInDays) && x.DownloadedBookAmount.Equals(dto.DownloadedBookAmount)).SingleOrDefaultAsync();
+            if (user == null)
+            {
+                throw new Exception("User Not Found");
+            }
+            else
+            {
+                if (Enum.TryParse(dto.Name, out SubscriptionType sub))
+                {
+                    user.Name = sub;
+                }
+                else
+                {
+                    throw new Exception("Invalid SubscriptionType value ");
+                }
+                user.Description = dto.Description;
+                user.Price = dto.Price;
+                user.durationInDays = dto.durationInDays;
+                user.DownloadedBookAmount = dto.DownloadedBookAmount;
+                user.IsActive = false;
+            }
+            _ReadingRoomDBContext.Update(user);
+            await _ReadingRoomDBContext.SaveChangesAsync();
         }
         [NonAction]
-        public Task UpdateAdmin(UpdateAdmin dto)
+        public async Task UpdateAdmin(UpdateAdmin dto)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(dto.Email) || string.IsNullOrEmpty(dto.fullName) ||
+                string.IsNullOrEmpty(dto.Phone) || string.IsNullOrEmpty(dto.Password))
+                throw new Exception("enterd values are required");
+            var user = await _ReadingRoomDBContext.Persons.Where(x => x.fullName.Equals(dto.fullName)
+            && x.Email.Equals(dto.Email) && x.Phone.Equals(dto.Phone)
+            && x.Password.Equals(dto.Password)).SingleOrDefaultAsync();
+            if (user == null)
+            {
+                throw new Exception("User Not Found");
+            }
+            else
+            {
+                user.fullName = dto.fullName;
+                user.Email = dto.Email;
+                user.Phone = dto.Phone;
+                user.Password = dto.Password;
+            }
+            _ReadingRoomDBContext.Update(user);
+            await _ReadingRoomDBContext.SaveChangesAsync();
+        }
+    
+        [NonAction]
+        public async Task UpdateEmployee(UpdateEmpDTO dto)
+        {
+            if (string.IsNullOrEmpty(dto.Email) || string.IsNullOrEmpty(dto.FullName) ||
+                string.IsNullOrEmpty(dto.Phone) || string.IsNullOrEmpty(dto.Password))
+                throw new Exception("enterd values are required");
+            var user = await _ReadingRoomDBContext.Persons.Where(x => x.fullName.Equals(dto.FullName)
+            && x.Email.Equals(dto.Email) && x.Phone.Equals(dto.Phone)
+            && x.Password.Equals(dto.Password)).SingleOrDefaultAsync();
+            if (user == null)
+            {
+                throw new Exception("User Not Found");
+            }
+            else
+            {
+                user.fullName = dto.FullName;
+                user.Email = dto.Email;
+                user.Phone = dto.Phone;
+                user.Password = dto.Password;
+            }
+            _ReadingRoomDBContext.Update(user);
+            await _ReadingRoomDBContext.SaveChangesAsync();
         }
         [NonAction]
-        public Task UpdateEmployee(UpdateEmpDTO dto)
+        public async Task UpdateSub(UpdateSubs dto)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(dto.Name) || string.IsNullOrEmpty(dto.Description))
+                throw new Exception("Name and Description are required");
+            var user = await _ReadingRoomDBContext.Subscriptions.Where(x => x.Name.Equals(dto.Name)
+            && x.Description.Equals(dto.Description) && x.Price.Equals(dto.Price)
+            && x.durationInDays.Equals(dto.durationInDays) && x.DownloadedBookAmount.Equals(dto.DownloadedBookAmount))
+                .SingleOrDefaultAsync();
+            if (user == null)
+            {
+                throw new Exception("Sub Not Found");
+            }
+            else
+            {
+                if (Enum.TryParse(dto.Name, out SubscriptionType sub))
+                {
+                    user.Name = sub;
+                }
+                else
+                {
+                    throw new Exception("Invalid SubscriptionType value ");
+                }
+                user.Description = dto.Description;
+                user.Price = dto.Price;
+                user.durationInDays = dto.durationInDays;
+                user.DownloadedBookAmount = dto.DownloadedBookAmount;
+                user.IsActive = true;
+            }
+            _ReadingRoomDBContext.Update(user);
+            await _ReadingRoomDBContext.SaveChangesAsync();
         }
-        [NonAction]
-        public Task UpdateSub(UpdateSubs dto)
-        {
-            throw new NotImplementedException();
-        }
+    }
         #endregion
     }
-}
+

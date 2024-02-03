@@ -15,6 +15,20 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//builder.Services.AddSwaggerGen(options =>
+//{
+//    options.SwaggerDoc("v1", new OpenApiInfo
+//    {
+//        Version = "v1",
+//        Title = "ReadStation system",
+//        Description = ""
+//    });
+
+//    // using System.Reflection;
+//    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+//    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+//});
+
 builder.Services.AddDbContext<ReadingRoomDBContext>(cnn => cnn.UseSqlServer(builder.Configuration.GetConnectionString("sqlconnect")));
 
 //builder.Services.AddDbContext<BookStoreDBContext>(cnn => cnn.UseMySQL(builder.Configuration.GetConnectionString("mysqlconnect")));

@@ -19,8 +19,8 @@ namespace ReadingRoom.Models.EntityConfiguration
             builder.ToTable(x => x.HasCheckConstraint("CH_Person_Email", "EMAIL LIKE '%@____%.COM'"));
             builder.Property(x => x.IsActive).HasDefaultValue(true);
 
-            builder.HasOne<Content>(x => x.Content)
-                .WithMany("Client").OnDelete(DeleteBehavior.Restrict); ;
+            //builder.HasOne<Content>(x => x.Content)
+            //    .WithMany("Client").OnDelete(DeleteBehavior.Restrict); ;
         }
     }
 }
